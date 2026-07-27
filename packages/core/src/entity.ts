@@ -122,33 +122,33 @@ export class TrellisEntity extends LitElement {
     .entity {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      border: 1px solid #e0e0e0;
-      background: #ffffff;
-      font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+      gap: var(--space-2);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: var(--font-sans);
     }
     .entity[data-shell='node'] {
       width: max-content;
-      padding: 0.25rem 0.6rem;
-      font-size: 0.75rem;
+      padding: var(--space-1) var(--space-2);
+      font-size: var(--font-size-xs);
     }
     .entity[data-shell='row'] {
-      padding: 0.5rem 0.75rem;
-      font-size: 0.875rem;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-sm);
     }
     .entity[data-shell='card'] {
       flex-direction: column;
       align-items: flex-start;
-      padding: 1rem;
+      padding: var(--space-4);
       min-width: 14rem;
     }
     .title {
-      font-weight: 500;
-      color: #161616;
+      font-weight: var(--font-weight-medium);
+      color: var(--primary);
     }
     .missing {
-      font-size: 0.75rem;
-      color: #6f6f6f;
+      font-size: var(--font-size-xs);
+      color: var(--muted-content);
     }
   `
 }

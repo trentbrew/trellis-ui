@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trellis — trellis-entity-list (TRL-46 design mock)</title>
+  <style>
+    :root {
+      /* Canonical tokens from tokens/design-tokens.css */
+      --bg: oklch(1 0 0);
+      --bg-surface: oklch(0.97 0.005 260);
+      --bg-elevated: oklch(0.95 0.008 260);
+      --bg-hover: oklch(0.9 0.01 260);
+      --primary: oklch(0.5 0.2 240);
+      --primary-content: oklch(1 0 0);
+      --secondary: oklch(0.6 0.15 180);
+      --secondary-content: oklch(1 0 0);
+      --accent: oklch(0.6 0.2 30);
+      --accent-content: oklch(1 0 0);
+      --destructive: oklch(0.5 0.25 25);
+      --destructive-content: oklch(1 0 0);
+      --muted: oklch(0.85 0.01 260);
+      --muted-content: oklch(0.5 0.02 260);
+      --border: oklch(0.85 0.01 260);
+      --border-focus: var(--primary);
+      --ring: var(--primary);
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --radius-sm: 0.25rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+      --radius-full: 9999px;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg: oklch(0.15 0.01 260);
+      --bg-surface: oklch(0.2 0.015 260);
+      --bg-elevated: oklch(0.25 0.02 260);
+      --bg-hover: oklch(0.3 0.025 260);
+      --primary: oklch(0.6 0.2 240);
+      --secondary: oklch(0.7 0.15 180);
+      --destructive: oklch(0.6 0.25 25);
+      --muted: oklch(0.3 0.02 260);
+      --muted-content: oklch(0.6 0.02 260);
+      --border: oklch(0.3 0.02 260);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+      }
+    }
+
+    body {
+      font-family: var(--font-sans);
+      margin: 0;
+      padding: var(--space-4);
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    .demo-section {
+      margin-bottom: var(--space-4);
+    }
+
+    .demo-label {
+      font-size: var(--font-size-xs);
+      color: var(--muted-content);
+      margin-bottom: var(--space-1);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      padding: var(--space-2) var(--space-3);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: var(--font-size-sm);
+      font-family: var(--font-sans);
+    }
+
+    /* Entity List Container */
+    .entity-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      padding: var(--space-2);
+      max-height: 40rem;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Entity Item */
+    .entity-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .entity-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .entity-item:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: 2px;
+    }
+
+    .entity-item[data-selected] {
+      background: var(--bg-hover);
+      border-left: 2px solid var(--primary);
+    }
+
+    .entity-item[role="listitem"] {
+      list-style: none;
+    }
+
+    /* Entity Item Content */
+    .entity-title {
+      font-weight: var(--font-weight-medium);
+      color: var(--primary);
+    }
+
+    .entity-meta {
+      font-size: var(--font-size-xs);
+      color: var(--muted-content);
+      margin-left: auto;
+    }
+
+    .entity-type {
+      font-size: var(--font-size-xs);
+      color: var(--muted-content);
+      padding: var(--space-1) var(--space-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    /* Empty State */
+    .entity-empty {
+      padding: var(--space-4);
+      text-align: center;
+      color: var(--muted-content);
+      font-size: var(--font-size-sm);
+    }
+
+    /* Loading State */
+    .entity-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      color: var(--muted-content);
+      font-size: var(--font-size-sm);
+    }
+
+    .entity-loading::before {
+      content: '';
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: var(--radius-full);
+      animation: spin 1s linear infinite;
+      margin-right: var(--space-2);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .entity-loading::before {
+        animation: none;
+      }
+    }
+
+    /* Error State */
+    .entity-error {
+      padding: var(--space-3);
+      color: var(--destructive);
+      font-size: var(--font-size-xs);
+      border: 1px solid var(--destructive);
+      border-radius: var(--radius-sm);
+    }
+
+    /* Shell Variants */
+    .entity-item[data-shell="node"] {
+      font-size: var(--font-size-xs);
+      padding: var(--space-1) var(--space-2);
+    }
+
+    .entity-item[data-shell="row"] {
+      font-size: var(--font-size-sm);
+    }
+
+    .entity-item[data-shell="card"] {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: var(--space-4);
+    }
+
+    /* Data Design Notes */
+    [data-design-note] {
+      position: relative;
+    }
+
+    [data-design-note]::after {
+      content: attr(data-design-note);
+      position: absolute;
+      top: -0.5rem;
+      right: -0.5rem;
+      background: var(--muted);
+      color: var(--primary);
+      font-size: 0.625rem;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="font-size: 1.5rem; margin-bottom: var(--space-4);">Trellis — trellis-entity-list (TRL-46 design mock)</h1>
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+
+  <!-- Loading State -->
+  <div class="demo-section">
+    <div class="demo-label">Loading State</div>
+    <div class="entity-list" role="list" aria-label="Entity list loading" aria-busy="true">
+      <div class="entity-loading" role="status" aria-label="Loading entities">
+        Loading...
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="demo-section">
+    <div class="demo-label">Empty State</div>
+    <div class="entity-list" role="list" aria-label="Entity list empty">
+      <div class="entity-empty" role="status">
+        No items found
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="demo-section">
+    <div class="demo-label">Error State</div>
+    <div class="entity-list" role="list" aria-label="Entity list error">
+      <div class="entity-error" role="alert">
+        Failed to load entities: Connection refused
+      </div>
+    </div>
+  </div>
+
+  <!-- Loaded State — Node Shell (vantage <= 4) -->
+  <div class="demo-section">
+    <div class="demo-label">Loaded — Node Shell (vantage 1-4)</div>
+    <div class="entity-list" role="list" aria-label="Entity list">
+      <div class="entity-item" data-shell="node" role="listitem" tabindex="0" aria-selected="false" data-design-note="Compact inline item">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-330</span>
+        <span class="entity-meta">closed</span>
+      </div>
+      <div class="entity-item" data-shell="node" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-329</span>
+        <span class="entity-meta">closed</span>
+      </div>
+      <div class="entity-item" data-shell="node" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-46</span>
+        <span class="entity-meta">in_progress</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loaded State — Row Shell (vantage 5-7) -->
+  <div class="demo-section">
+    <div class="demo-label">Loaded — Row Shell (vantage 5-7)</div>
+    <div class="entity-list" role="list" aria-label="Entity list">
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false" data-design-note="Standard list item with full metadata">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-330</span>
+        <span class="entity-meta">closed · impl PASS</span>
+      </div>
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-329</span>
+        <span class="entity-meta">closed · 13/13 AC</span>
+      </div>
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-46</span>
+        <span class="entity-meta">in_progress · needs-design</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loaded State — Card Shell (vantage 8+) -->
+  <div class="demo-section">
+    <div class="demo-label">Loaded — Card Shell (vantage 8+)</div>
+    <div class="entity-list" role="list" aria-label="Entity list">
+      <div class="entity-item" data-shell="card" role="listitem" tabindex="0" aria-selected="false" data-design-note="Expanded card with full details">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-330</span>
+        <span class="entity-meta">closed · impl PASS · 8/8 AC</span>
+      </div>
+      <div class="entity-item" data-shell="card" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-329</span>
+        <span class="entity-meta">closed · spec · 13/13 AC</span>
+      </div>
+      <div class="entity-item" data-shell="card" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-46</span>
+        <span class="entity-meta">in_progress · needs-design</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selection Demo -->
+  <div class="demo-section">
+    <div class="demo-label">Selection Demo (click to select, Enter/Space to toggle)</div>
+    <div class="entity-list" role="list" aria-label="Selectable entity list" id="selection-list">
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false" data-design-note="Click to select, left border indicates selection">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-330</span>
+        <span class="entity-meta">closed</span>
+      </div>
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-329</span>
+        <span class="entity-meta">closed</span>
+      </div>
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-46</span>
+        <span class="entity-meta">in_progress</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dark Mode Demo -->
+  <div class="demo-section">
+    <div class="demo-label">Dark Mode (toggle theme above)</div>
+    <div class="entity-list" role="list" aria-label="Dark mode entity list" data-theme="dark">
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-330</span>
+        <span class="entity-meta">closed</span>
+      </div>
+      <div class="entity-item" data-shell="row" role="listitem" tabindex="0" aria-selected="false">
+        <span class="entity-type">Issue</span>
+        <span class="entity-title">TRL-329</span>
+        <span class="entity-meta">closed</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', current === 'dark' ? 'default' : 'dark');
+    }
+
+    // Selection demo
+    document.querySelectorAll('#selection-list .entity-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const wasSelected = item.getAttribute('aria-selected') === 'true';
+        item.setAttribute('aria-selected', wasSelected ? 'false' : 'true');
+        item.toggleAttribute('data-selected');
+      });
+
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          item.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

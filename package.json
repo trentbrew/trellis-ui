@@ -5,10 +5,15 @@
     "build": "pnpm -r build",
     "check": "pnpm -r check",
     "typecheck": "pnpm -r typecheck",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "test:e2e": "vitest run"
   },
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "devDependencies": {
+    "@open-wc/testing": "^5.0.0",
+    "vitest": "^4.1.10"
+  }
 }

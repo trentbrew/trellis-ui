@@ -1,14 +1,16 @@
+import type { Signal } from 'trellis/browser'
+
 export function bindText(
-  signal: { value: string },
+  signal: Signal<string>,
   element: HTMLElement,
 ): () => void {
   const update = () => { element.textContent = signal.value }
   update()
-  return () => {} // cleanup subscription (consumer manages signal lifecycle)
+  return signal.subscribe(() => update())
 }
 
 export function bindClass(
-  signal: { value: string },
+  signal: Signal<string>,
   element: HTMLElement,
   map: Record<string, string>,
 ): () => void {
@@ -18,11 +20,11 @@ export function bindClass(
     }
   }
   update()
-  return () => {}
+  return signal.subscribe(() => update())
 }
 
 export function bindAttr(
-  signal: { value: boolean },
+  signal: Signal<boolean>,
   element: HTMLElement,
   name: string,
 ): () => void {
@@ -34,22 +36,22 @@ export function bindAttr(
     }
   }
   update()
-  return () => {}
+  return signal.subscribe(() => update())
 }
 
 export function bindVisible(
-  signal: { value: boolean },
+  signal: Signal<boolean>,
   element: HTMLElement,
 ): () => void {
   const update = () => {
     element.style.display = signal.value ? '' : 'none'
   }
   update()
-  return () => {}
+  return signal.subscribe(() => update())
 }
 
 export function bindList<T>(
-  signal: { value: T[] },
+  signal: Signal<T[]>,
   container: HTMLElement,
   renderItem: (item: T, index: number) => string,
 ): () => void {
@@ -57,5 +59,5 @@ export function bindList<T>(
     container.innerHTML = signal.value.map(renderItem).join('')
   }
   update()
-  return () => {}
+  return signal.subscribe(() => update())
 }
