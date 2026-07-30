@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raster — Trellis query component (TRL-29 design mock)</title>
+  <style>
+    /* trelliscustom-fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    /* trelliscustom-design-token-core */
+    :root {
+      /* foundation — raw oklch palette, never change across themes */
+      --color-blue-950: oklch(0.247 0.107 267.94);
+      --color-blue-900: oklch(0.419 0.086 269.59);
+      --color-blue-500: oklch(0.623 0.208 264.32);
+      --color-blue-400: oklch(0.71 0.139 235.48);
+      --color-green-500: oklch(0.651 0.129 150.6);
+      --color-green-400: oklch(0.771 0.147 168.54);
+      --color-yellow-500: oklch(0.755 0.152 92.79);
+      --color-yellow-400: oklch(0.867 0.155 84.63);
+      --color-red-500: oklch(0.696 0.137 11.95);
+      --color-red-400: oklch(0.805 0.137 20.83);
+      --color-purple-400: oklch(0.733 0.151 274.77);
+      --color-gray-950: oklch(0.129 0 0);
+      --color-gray-900: oklch(0.269 0 0);
+      --color-gray-800: oklch(0.439 0 0);
+      --color-gray-700: oklch(0.609 0 0);
+      --color-gray-600: oklch(0.779 0 0);
+      --color-gray-400: oklch(0.939 0 0);
+      --color-gray-300: oklch(0.959 0 0);
+      --color-gray-200: oklch(0.979 0 0);
+      --color-gray-100: oklch(0.994 0 0);
+
+      /* semantic tokens — theme-variant intent aliases */
+      /* Surfaces */
+      --surface-bg: var(--color-gray-950);
+      --surface-raised: var(--color-gray-800);
+      --surface-inset: var(--color-gray-900);
+      --surface-overlay: var(--color-gray-700);
+
+      /* Text */
+      --text: var(--color-gray-50);
+      --text-secondary: var(--color-gray-300);
+      --text-tertiary: var(--color-gray-400);
+      --text-interactive: var(--color-blue-400);
+
+      /* Borders */
+      --border: rgba(255, 255, 255, 0.195);
+      --border-strong: rgba(255, 255, 255, 0.266);
+      --border-focus: var(--color-blue-500);
+
+      /* State */
+      --green: var(--color-green-500);
+      --yellow: var(--color-yellow-500);
+      --red: var(--color-red-500);
+      --blue: var(--color-purple-400);
+
+      /* Entity types */
+      --entity-file: #00ceb9;
+      --entity-milestone: #2090f5;
+      --entity-issue: #edb2f1;
+      --entity-branch: #fcd53a;
+      --entity-default: var(--text-secondary);
+
+      /* Glass / inset */
+      --glass-surface: rgba(22, 22, 22, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.04);
+      --kanban-body-inset: rgba(255, 255, 255, 0.02);
+
+      /* Badge backgrounds */
+      --badge-success-bg: color-mix(in oklch, var(--green) 15%, transparent);
+      --badge-success-border: color-mix(in oklch, var(--green) 30%, transparent);
+      --badge-warning-bg: color-mix(in oklch, var(--yellow) 15%, transparent);
+      --badge-warning-border: color-mix(in oklch, var(--yellow) 25%, transparent);
+      --badge-critical-bg: color-mix(in oklch, var(--red) 15%, transparent);
+      --badge-neutral-bg: color-mix(in oklch, var(--text-tertiary) 15%, transparent);
+      --accent-glow: color-mix(in oklch, var(--text-interactive) 12%, transparent);
+
+      /* Inset ladder */
+      --surface-1: color-mix(in oklch, var(--surface-raised) 25%, var(--surface-bg));
+      --surface-2: color-mix(in oklch, var(--surface-raised) 50%, var(--surface-bg));
+      --surface-3: var(--surface-raised);
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px rgb(0 0 0 / 0.15);
+
+      /* Legacy aliases (deprecated) */
+      --bg: var(--surface-bg);
+      --bg2: var(--color-gray-900);
+      --surface: var(--surface-raised);
+      --surface2: var(--surface-inset);
+      --accent: var(--text-interactive);
+      --accent2: color-mix(in oklch, var(--text-interactive) 85%, white);
+      --accent-glow: var(--accent-glow);
+      --blue: var(--color-purple-400);
+      --glass: var(--glass-surface);
+      --glass-border: var(--glass-border);
+
+      /* component tokens — scoped design tokens */
+      /* Sidebar */
+      --sidebar-bg: var(--surface-bg);
+      --sidebar-border: var(--border);
+      --sidebar-item-hover: rgba(255, 255, 255, 0.06);
+      --sidebar-item-active: color-mix(in oklch, var(--text-interactive) 12%, transparent);
+      --sidebar-rail-w: 56px;
+      --sidebar-expanded-w: 200px;
+      --sidebar-min-w: 140px;
+      --sidebar-max-w: 360px;
+
+      /* Header */
+      --header-bg: var(--glass-surface);
+      --header-border: var(--border);
+      --header-height: 56px;
+
+      /* Secondary sidebar */
+      --secondary-bg: var(--surface-inset);
+      --secondary-w: 224px;
+      --secondary-rail-w: 48px;
+      --secondary-min-w: 160px;
+      --secondary-max-w: 360px;
+
+      /* Oplog */
+      --oplog-bg: var(--surface-inset);
+      --oplog-border: var(--border);
+      --oplog-w: 280px;
+      --oplog-min-w: 200px;
+      --oplog-max-w: 560px;
+
+      /* Toolbar */
+      --toolbar-track: #1e1e1e;
+      --toolbar-active: #1c1c1c);
+      --toolbar-control-h: 34px);
+
+      /* Cards */
+      --card-bg: var(--surface-raised);
+      --card-border: var(--border);
+      --card-radius: 10px);
+
+      /* Kanban */
+      --kanban-col-w: 300px);
+      --kanban-gap: 16px);
+
+      /* Search */
+      --search-bg: var(--surface-raised);
+      --search-border: var(--border);
+
+      /* Toast */
+      --toast-bg: var(--surface-raised);
+      --toast-border: var(--border);
+
+      /* Dialog */
+      --dialog-bg: var(--surface-raised);
+      --dialog-border: var(--border);
+      --dialog-radius: 14px);
+
+      /* Resize handle */
+      --resize-hover: color-mix(in oklch, var(--text-interactive) 35%, transparent);
+
+      /* Progress spin */
+      --progress-color: var(--green);
+
+      /* Spacing */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-12: 3rem;
+      --space-16: 4rem);
+
+      /* Typography */
+      --font-sans: Inter, system-ui, -apple-system, sans-serif;
+      --font-mono: JetBrains Mono, Fira Code, monospace;
+      --font-serif: Georgia, serif;
+      --font-size-xs: 0.75rem;
+      --font-size-sm: 0.875rem;
+      --font-size-base: 1rem;
+      --font-size-lg: 1.125rem;
+      --font-size-xl: 1.25rem;
+      --font-size-2xl: 1.5rem;
+      --font-weight-normal: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --line-height-tight: 1.25;
+      --line-height-normal: 1.5;
+      --line-height-relaxed: 1.75;
+    }
+
+    /* base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text);
+      background: var(--surface-bg);
+      min-height: 100vh;
+      padding: var(--space-6);
+    }
+
+    /* trellis-shell */
+    trellis-shell {
+      display: block;
+      font-family: var(--font-sans);
+      color: var(--text);
+      background: var(--surface-bg);
+      min-height: 100vh;
+    }
+
+    .shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .shell-header {
+      height: var(--header-height);
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--header-border);
+      display: flex;
+      align-items: center;
+      padding: 0 var(--space-4);
+      flex-shrink: 0;
+    }
+
+    .shell-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .shell-main {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-4);
+      background: var(--surface-bg);
+    }
+
+    /* trellis-sidebar */
+    trellis-sidebar {
+      display: block;
+      font-family: var(--font-sans);
+      color: var(--text);
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      transition: width 0.2s ease;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+      min-height: 100%;
+    }
+
+    .sidebar {
+      display: flex;
+      width: var(--sidebar-w, var(--sidebar-expanded-w, 200px));
+      min-width: var(--sidebar-min-w);
+      max-width: var(--sidebar-max-w);
+      height: 100%;
+    }
+
+    .sidebar-rail {
+      width: var(--sidebar-rail-w);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: var(--space-2);
+      border-right: 1px solid var(--sidebar-border);
+      cursor: pointer;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-rail::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: var(--text-secondary);
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    .sidebar-rail:hover::before {
+      background: var(--text-interactive);
+    }
+
+    .sidebar-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-2);
+    }
+
+    /* component demos */
+    .component-demo {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--card-radius);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+      color: var(--text-secondary);
+    }
+
+    .component-demo h3 {
+      margin-bottom: var(--space-3);
+      color: var(--text);
+      font-size: var(--font-size-lg);
+    }
+
+    .component-demo p {
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height-normal);
+      margin-bottom: var(--space-2);
+    }
+
+    /* search component */
+    .search-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--space-6);
+    }
+
+    .search-input {
+      position: relative;
+      margin-bottom: var(--space-4);
+    }
+
+    .search-input input {
+      width: 100%;
+      height: 48px;
+      padding: 0 var(--space-4);
+      border: 1px solid var(--search-border);
+      border-radius: var(--radius-md);
+      background: var(--search-bg);
+      color: var(--text);
+      font-size: var(--font-size-base);
+      font-family: inherit;
+    }
+
+    .search-input input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+
+    .search-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+
+    .search-chip {
+      padding: var(--space-2) var(--space-3);
+      background: var(--surface-inset);
+      border-radius: var(--radius-sm);
+      font-size: var(--font-size-xs);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .search-chip:hover {
+      background: var(--surface-raised);
+      color: var(--text);
+    }
+
+    .search-chips:before, .search-chips:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      opacity: 0.5;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+      align-items: center;
+    }
+
+    .view-toggle button {
+      padding: var(--space-2);
+      border: 1px solid var(--toolbar-track);
+      border-radius: var(--radius-sm);
+      background: var(--toolbar-track);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .view-toggle button:hover {
+      background: var(--toolbar-active);
+      color: var(--text-interactive);
+    }
+
+    .view-toggle button.active {
+      background: var(--toolbar-active);
+      color: var(--text-interactive);
+    }
+
+    .view-toggle button.active:hover {
+      background: var(--toolbar-active);
+      color: var(--text-interactive);
+    }
+
+    /* left sidebar */
+    trellis-sidebar[position="left"] {
+      border-right: 1px solid var(--sidebar-border);
+      border-left: none;
+    }
+
+    trellis-sidebar[position="right"] {
+      border-left: 1px solid var(--sidebar-border);
+      border-right: none;
+    }
+
+    /* facet panel demo in sidebar */
+    .facet-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-4);
+    }
+
+    .facet-section {
+      margin-bottom: var(--space-4);
+    }
+
+    .facet-section h4 {
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-2);
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .facet-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .facet-option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .facet-option:hover {
+      background: var(--sidebar-item-hover);
+    }
+
+    .facet-option.active {
+      background: var(--sidebar-item-active);
+    }
+
+    .facet-option.active .facet-label {
+      color: var(--text-interactive);
+      font-weight: var(--font-weight-medium);
+    }
+
+    /* result area */
+    .results-area {
+      margin-top: var(--space-4);
+    }
+
+    .result-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--card-radius);
+      padding: var(--space-4);
+      margin-bottom: var(--space-4);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .result-item:hover {
+      background: var(--surface-overlay);
+      border-color: var(--card-border-hover);
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-2);
+    }
+
+    .result-title {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text);
+    }
+
+    .result-meta {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+    }
+
+    .result-preview {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border);
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+    }
+
+    /* experimental RGB-based color tokens (deprecated) */
+    .rgb-blue-500 { color: #9dbefe; }
+    .rgb-green-500 { color: #12c905; }
+    .rgb-yellow-500 { color: #fcd53a; }
+    .rgb-red-500 { color: #fc533a; }
+
+    /* legacy color class names for compatibility testing */
+    .legacy-primary { color: var(--color-blue-500); }
+    .legacy-bg-surface { background-color: var(--color-gray-800); }
+    .legacy-text-secondary { color: var(--color-gray-300); }
+
+    /* test elements for validation */
+    .test-validation-element {
+      border: 2px solid var(--border);
+      padding: var(--space-4);
+      margin: var(--space-4) 0;
+      background: var(--surface-bg);
+    }
+
+    .test-color-validation {
+      display: inline-block;
+      width: 100px;
+      height: 40px;
+      margin: 0 var(--space-2) var(--space-2) 0;
+      border: 1px solid var(--border);
+    }
+
+    .test-legacy-alias-validation::before {
+      content: attr(data-alias);
+      display: block;
+      font-size: var(--font-size-xs);
+      color: var(--text-tertiary);
+      margin-bottom: var(--space-2);
+    }
+
+    .test-legacy-alias-validation[data-alias="--bg"]::before {
+      content: "--bg -> --surface-bg (surface-raised: #1c1c1c)";
+    }
+
+    .test-legacy-alias-validation[data-alias="--accent"]::before {
+      content: "--accent -> --text-interactive (blue-400: #9dbefe)";
+    }
+
+    .test-legacy-alias-validation[data-alias="--bg-surface"]::before {
+      content: "--bg-surface -> --surface-raised (alias from design-tokens.css)";
+    }
+  </style>
+</head>
+<body>
+  <trellis-shell theme="light">
+    <header class="shell-header">
+      <h1 style="color: var(--text); font-size: var(--font-size-xl); font-weight: var(--font-weight-semibold);">
+        Trellis Query Component</h1>
+    </header>
+
+    <div class="shell-body">
+      <trellis-sidebar position="left" expanded>
+        <div class="sidebar-rail">
+          <div class="sidebar-rail-item"></div>
+        </div>
+        <div class="sidebar-content">
+          <div class="facet-panel">
+            <div class="facet-section">
+              <h4>Entity Type</h4>
+              <div class="facet-options">
+                <div class="facet-option active">
+                  <span class="facet-label">Issue</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">Milestone</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">Branch</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">Person</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="facet-section">
+              <h4>Status</h4>
+              <div class="facet-options">
+                <div class="facet-option active">
+                  <span class="facet-label">Open</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">Closed</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">Draft</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="facet-section">
+              <h4>Date Range</h4>
+              <div class="facet-options">
+                <div class="facet-option">
+                  <span class="facet-label">This Week</span>
+                </div>
+                <div class="facet-option active">
+                  <span class="facet-label">This Month</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">All Time</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </trellis-sidebar>
+
+      <div class="shell-main">
+        <div class="search-container">
+          <div class="search-input">
+            <input type="text" placeholder="Search entities, milestones, branches..." value="query: milestone AND status:open">
+          </div>
+
+          <div class="search-chips">
+            <div class="search-chip">@milestone</div>
+            <div class="search-chip">bug</div>
+            <div class="search-chip">performance</div>
+            <div class="search-chip">critical</div>
+          </div>
+
+          <div class="view-toggle">
+            <button title="List view">⊡</button>
+            <button title="Grid view" class="active">⬟</button>
+          </div>
+        </div>
+
+        <div class="results-area">
+          <div class="component-demo">
+            <h3>Search Component Integration</h3>
+            <p>The search component integrates with the shell and sidebar template, showing search input, chips, and view toggle using CSS custom properties from the three-layer token architecture.</p>
+            <div style="margin-top: var(--space-4);">
+              <div style="display: flex; gap: var(--space-4);">
+                <div class="test-color-validation" style="background: var(--search-bg);"></div>
+                <div class="test-color-validation" style="background: var(--search-border);"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="component-demo">
+            <h3>Legacy alias validation test</h3>
+            <p>CSS custom properties use canonical names (--sidebar-bg) with legacy aliases (--bg) available in design-tokens.css</p>
+            <div style="margin-top: var(--space-4);">
+              <div class="test-legacy-alias-validation" data-alias="--bg"></div>
+              <div class="test-legacy-alias-validation" data-alias="--accent"></div>
+              <div class="test-legacy-alias-validation" data-alias="--bg-surface"></div>
+            </div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-header">
+              <span class="result-title">milestone: improve query integration</span>
+              <span class="result-meta">
+                <span>type: milestone</span>
+                <span>status: in-progress</span>
+              </span>
+            </div>
+            <div class="result-preview">
+              <p>Merges search component template for trellix-query with shell/sidebar components using token CSS custom properties. Implements color integration and font-overridable system-ui default.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <trellis-sidebar position="right" expanded>
+        <div class="sidebar-rail">
+          <div class="sidebar-rail-item"></div>
+        </div>
+        <div class="sidebar-content">
+          <div class="facet-panel">
+            <div class="facet-section">
+              <h4>Advanced Filters</h4>
+              <div class="facet-options">
+                <div class="facet-option">
+                  <span class="facet-label">Created By</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">Labels</span>
+                </div>
+                <div class="facet-option">
+                  <span class="facet-label">Assigned To</span>
+                </div>
+                <div class="facet-option active">
+                  <span class="facet-label">Custom Fields</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </trellis-sidebar>
+    </div>
+  </trellis-shell>
+
+  <script>
+    // trellix-query component demo logic
+    document.addEventListener('DOMContentLoaded', function() {
+      // demo initialization
+      const searchInput = document.querySelector('.search-input input');
+      const viewButtons = document.querySelectorAll('.view-toggle button');
+      const facetOptions = document.querySelectorAll('.facet-option');
+
+      // search demo - highlight on focus
+      searchInput.addEventListener('focus', function() {
+        this.parentElement.style.transform = 'scale(1.02)';
+        this.parentElement.style.transition = 'transform 0.2s ease';
+      });
+
+      searchInput.addEventListener('blur', function() {
+        this.parentElement.style.transform = 'scale(1)';
+      });
+
+      // view toggle demo - update active state and layout
+      viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          viewButtons.forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          
+          // demo toggle effect
+          const results = document.querySelector('.results-area');
+          if (this.textContent.includes('⊡')) {
+            results.style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+            results.style.gap = '16px';
+          } else {
+            results.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+            results.style.gap = '8px';
+          }
+        });
+      });
+
+      // facet selection demo
+      facetOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          facetOptions.forEach(opt => opt.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      // result interaction demo
+      const resultItems = document.querySelectorAll('.result-item');
+      resultItems.forEach(item => {
+        item.addEventListener('click', function() {
+          this.style.background = 'var(--surface-overlay)';
+          this.style.borderColor = 'var(--text-interactive)';
+          setTimeout(() => {
+            this.style.background = '';
+            this.style.borderColor = '';
+          }, 200);
+        });
+      });
+
+      console.log('Trellix query component loaded — explore search interface using the new shell/sidebar components!');
+    });
+  </script>
+</body>
+</html>

@@ -1,65 +1,70 @@
+/**
+ * Design tokens — composition layer.
+ * Imports foundation → semantic → component tokens, plus backward compatibility aliases.
+ * @module @trellis.computer/tokens
+ *
+ * Preferred import: use foundation.css, semantic.css, components.css directly.
+ * This file is the legacy entry point for existing consumers.
+ */
+@import './foundation.css';
+@import './semantic.css';
+@import './components.css';
+
 :root {
-  /* ===== SURFACES ===== */
-  --bg: oklch(1 0 0);
-  --bg-surface: oklch(0.97 0.005 260);
-  --bg-elevated: oklch(0.95 0.008 260);
-  --bg-hover: oklch(0.9 0.01 260);
+  /* ===== Backward compatibility aliases (deprecated) ===== */
+  /* Surfaces */
+  --bg-surface: var(--surface-raised);
+  --bg-elevated: var(--color-gray-700);
+  --bg-hover: var(--color-gray-600);
 
-  /* ===== BRAND ===== */
-  --primary: oklch(0.5 0.2 240);
-  --primary-content: oklch(1 0 0);
-  --secondary: oklch(0.6 0.15 180);
-  --secondary-content: oklch(1 0 0);
-  --accent: oklch(0.6 0.2 30);
-  --accent-content: oklch(1 0 0);
+  /* Brand */
+  --primary: var(--color-blue-500);
+  --primary-content: var(--color-gray-50);
+  --secondary: var(--color-green-400);
+  --secondary-content: var(--color-gray-50);
+  --accent: var(--color-yellow-500);
+  --accent-content: var(--color-gray-50);
 
-  /* ===== STATE ===== */
-  --info: oklch(0.6 0.15 220);
-  --info-content: oklch(1 0 0);
-  --success: oklch(0.55 0.2 150);
-  --success-content: oklch(1 0 0);
-  --warning: oklch(0.65 0.2 80);
-  --warning-content: oklch(0.15 0.01 260);
-  --destructive: oklch(0.5 0.25 25);
-  --destructive-content: oklch(1 0 0);
-  --muted: oklch(0.85 0.01 260);
-  --muted-content: oklch(0.5 0.02 260);
+  /* State */
+  --info: var(--color-purple-400);
+  --info-content: var(--color-gray-50);
+  --success: var(--color-green-500);
+  --success-content: var(--color-gray-50);
+  --warning: var(--color-yellow-500);
+  --warning-content: var(--color-gray-900);
+  --destructive: var(--color-red-500);
+  --destructive-content: var(--color-gray-50);
+  --muted: var(--color-gray-200);
+  --muted-content: var(--color-gray-500);
 
-  /* ===== ENTITY TYPE ===== */
-  --color-issue: oklch(0.55 0.2 240);
-  --color-lane: oklch(0.55 0.2 180);
-  --color-project: oklch(0.55 0.2 30);
-  --color-person: oklch(0.55 0.2 120);
-  --color-note: oklch(0.55 0.15 80);
-  --color-doc: oklch(0.55 0.1 300);
+  /* Entity type */
+  --color-issue: var(--entity-issue);
+  --color-lane: var(--color-blue-500);
+  --color-project: var(--color-yellow-500);
+  --color-person: var(--color-green-500);
+  --color-note: var(--color-gray-400);
+  --color-doc: var(--color-purple-400);
 
-  /* ===== STATUS ===== */
-  --status-todo: oklch(0.6 0.15 220);
-  --status-in-progress: oklch(0.6 0.2 80);
-  --status-done: oklch(0.55 0.2 150);
-  --status-blocked: oklch(0.5 0.25 25);
-  --status-cancelled: oklch(0.5 0.02 260);
+  /* Status */
+  --status-todo: var(--color-blue-400);
+  --status-in-progress: var(--color-yellow-500);
+  --status-done: var(--color-green-500);
+  --status-blocked: var(--color-red-500);
+  --status-cancelled: var(--color-gray-500);
 
-  /* ===== STRUCTURAL ===== */
-  --border: oklch(0.85 0.01 260);
-  --border-focus: var(--primary);
-  --input-bg: var(--bg);
+  /* Structural */
+  --input-bg: var(--surface-bg);
   --input-border: var(--border);
-  --ring: var(--primary);
+  --ring: var(--border-focus);
 
-  /* ===== RADIUS ===== */
+  /* Radius */
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-full: 9999px;
 
-  /* ===== SHADOWS ===== */
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px rgb(0 0 0 / 0.15);
-
-  /* ===== SPACING ===== */
+  /* Spacing */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -69,7 +74,7 @@
   --space-12: 3rem;
   --space-16: 4rem;
 
-  /* ===== TYPOGRAPHY ===== */
+  /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-serif: 'Georgia', serif;
@@ -89,35 +94,35 @@
 }
 
 [data-theme="dark"] {
-  --bg: oklch(0.15 0.01 260);
-  --bg-surface: oklch(0.2 0.015 260);
-  --bg-elevated: oklch(0.25 0.02 260);
-  --bg-hover: oklch(0.3 0.025 260);
+  --bg: var(--color-gray-950);
+  --bg-surface: var(--color-gray-800);
+  --bg-elevated: var(--color-gray-700);
+  --bg-hover: var(--color-gray-600);
 
-  --primary: oklch(0.6 0.2 240);
-  --secondary: oklch(0.7 0.15 180);
-  --accent: oklch(0.7 0.2 30);
+  --primary: var(--color-blue-500);
+  --secondary: var(--color-green-400);
+  --accent: var(--color-yellow-500);
 
-  --info: oklch(0.7 0.15 220);
-  --success: oklch(0.65 0.2 150);
-  --warning: oklch(0.75 0.2 80);
-  --destructive: oklch(0.6 0.25 25);
-  --muted: oklch(0.3 0.02 260);
-  --muted-content: oklch(0.6 0.02 260);
+  --info: var(--color-purple-400);
+  --success: var(--color-green-500);
+  --warning: var(--color-yellow-500);
+  --destructive: var(--color-red-500);
+  --muted: var(--color-gray-700);
+  --muted-content: var(--color-gray-300);
 
-  --color-issue: oklch(0.65 0.2 240);
-  --color-lane: oklch(0.65 0.2 180);
-  --color-project: oklch(0.65 0.2 30);
-  --color-person: oklch(0.65 0.2 120);
-  --color-note: oklch(0.65 0.15 80);
-  --color-doc: oklch(0.65 0.1 300);
+  --color-issue: var(--entity-issue);
+  --color-lane: var(--color-blue-500);
+  --color-project: var(--color-yellow-500);
+  --color-person: var(--color-green-500);
+  --color-note: var(--color-gray-400);
+  --color-doc: var(--color-purple-400);
 
-  --status-todo: oklch(0.7 0.15 220);
-  --status-in-progress: oklch(0.7 0.2 80);
-  --status-done: oklch(0.65 0.2 150);
-  --status-blocked: oklch(0.6 0.25 25);
+  --status-todo: var(--color-blue-400);
+  --status-in-progress: var(--color-yellow-500);
+  --status-done: var(--color-green-500);
+  --status-blocked: var(--color-red-500);
 
-  --border: oklch(0.3 0.02 260);
+  --border: var(--color-gray-600);
   --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
   --shadow-md: 0 4px 6px rgb(0 0 0 / 0.4);
   --shadow-lg: 0 10px 15px rgb(0 0 0 / 0.5);
@@ -126,8 +131,8 @@
 [data-theme="high-contrast"] {
   --bg: oklch(1 0 0);
   --bg-surface: oklch(0.97 0.005 260);
-  --primary: oklch(0.4 0.25 240);
-  --primary-content: oklch(1 0 0);
+  --primary: var(--color-blue-600);
+  --primary-content: var(--color-gray-50);
   --border: oklch(0.4 0.02 260);
   --text: oklch(0 0 0);
 }

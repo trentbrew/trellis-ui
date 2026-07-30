@@ -28,7 +28,7 @@ export class TrellisEditor extends LitElement {
   @property({ type: String, reflect: true })
   accessor placeholder: string = 'Start writing…'
 
-  private _editor!: Editor
+  private _editor: Editor | null = null
   private _content: string = ''
 
   connectedCallback() {
@@ -50,7 +50,7 @@ export class TrellisEditor extends LitElement {
 
     this._editor = new Editor({
       content: '',
-      extensions: [new StarterKit()],
+      extensions: [StarterKit],
       editable: this.editable,
       onUpdate: () => {
         this._content = this._editor?.getHTML() || ''
@@ -129,5 +129,3 @@ export class TrellisEditor extends LitElement {
 }
 
 customElements.define('trellis-editor', TrellisEditor)
-
-export { TrellisEditor }

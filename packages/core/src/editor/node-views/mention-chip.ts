@@ -31,5 +31,3 @@ export class TrellisMentionChip extends LitElement {
 }
 
 customElements.define('trellis-mention-chip', TrellisMentionChip)
-
-export { TrellisMentionChip }
