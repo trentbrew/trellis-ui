@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>trellis-ui — dev playground</title>
+  <link rel="stylesheet" href="tokens/foundation.css" />
+  <link rel="stylesheet" href="tokens/semantic.css" />
+  <link rel="stylesheet" href="tokens/components.css" />
+  <link rel="stylesheet" href="tokens/spacing.css" />
+  <link rel="stylesheet" href="tokens/typography.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--surface-bg);
+      color: var(--text);
+      font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+      padding: 2rem;
+    }
+    h1 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+    h2 { font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--text-secondary); }
+    section { margin-bottom: 3rem; }
+    .row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .col { display: flex; flex-direction: column; gap: 0.75rem; }
+    .demo-box { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1rem; background: var(--surface-raised); }
+    .demo-label { font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    pre { font-family: var(--font-mono); font-size: 0.75rem; background: var(--surface-inset); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border); overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>trellis-ui dev playground</h1>
+  <p style="color:var(--text-secondary);margin-bottom:2rem">Click around to see components in action.</p>
+
+  <!-- Shell + Sidebar + Header layout demo -->
+  <section>
+    <h2>Shell layout</h2>
+    <div style="height:400px;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden">
+      <trellis-shell>
+        <trellis-header slot="header" sticky>
+          <trellis-breadcrumb slot="breadcrumb"></trellis-breadcrumb>
+          <div slot="stats" style="display:flex;gap:0.5rem;align-items:center;font-size:0.75rem;color:var(--text-tertiary)">
+            <span>12 issues</span>
+            <span>·</span>
+            <span>3 open</span>
+          </div>
+          <div slot="actions" style="display:flex;gap:0.5rem;align-items:center">
+            <trellis-search placeholder="Search..."></trellis-search>
+            <trellis-view-toggle></trellis-view-toggle>
+          </div>
+        </trellis-header>
+        <trellis-sidebar slot="sidebar" position="left">
+          <trellis-sidebar-nav slot="main"></trellis-sidebar-nav>
+        </trellis-sidebar>
+        <div slot="main" style="padding:1rem;color:var(--text-secondary);font-size:0.875rem">
+          Main content area. Click nav items to see them activate.
+        </div>
+      </trellis-shell>
+    </div>
+  </section>
+
+  <!-- Header -->
+  <section>
+    <h2>Header variants</h2>
+    <div class="col" style="max-width:600px">
+      <div class="demo-box">
+        <div class="demo-label">Default (glass)</div>
+        <trellis-header>
+          <trellis-breadcrumb slot="breadcrumb"></trellis-breadcrumb>
+          <trellis-search slot="actions" placeholder="Search..."></trellis-search>
+        </trellis-header>
+      </div>
+      <div class="demo-box">
+        <div class="demo-label">Inset variant</div>
+        <trellis-header variant="inset">
+          <trellis-breadcrumb slot="breadcrumb"></trellis-breadcrumb>
+        </trellis-header>
+      </div>
+      <div class="demo-box">
+        <div class="demo-label">Default variant</div>
+        <trellis-header variant="default">
+          <trellis-breadcrumb slot="breadcrumb"></trellis-breadcrumb>
+        </trellis-header>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breadcrumb -->
+  <section>
+    <h2>Breadcrumb</h2>
+    <div class="col" style="max-width:600px">
+      <div class="demo-box">
+        <div class="demo-label">Segments with chevron separator</div>
+        <trellis-breadcrumb id="demo-breadcrumb"></trellis-breadcrumb>
+      </div>
+      <div class="demo-box">
+        <div class="demo-label">Slash separator</div>
+        <trellis-breadcrumb id="demo-breadcrumb-slash" separator="slash"></trellis-breadcrumb>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search -->
+  <section>
+    <h2>Search</h2>
+    <div class="col" style="max-width:400px">
+      <div class="demo-box">
+        <div class="demo-label">Default</div>
+        <trellis-search placeholder="Search entities..."></trellis-search>
+      </div>
+      <div class="demo-box">
+        <div class="demo-label">Disabled</div>
+        <trellis-search placeholder="Search disabled..." disabled></trellis-search>
+      </div>
+      <div class="demo-box">
+        <div class="demo-label">With value (type to see clear button)</div>
+        <trellis-search id="demo-search"></trellis-search>
+        <pre id="demo-search-output" style="margin-top:0.5rem">Events will appear here...</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- View Toggle -->
+  <section>
+    <h2>View Toggle</h2>
+    <div class="col" style="max-width:400px">
+      <div class="demo-box">
+        <div class="demo-label">Default (grid / kanban / table)</div>
+        <trellis-view-toggle id="demo-toggle"></trellis-view-toggle>
+        <pre id="demo-toggle-output" style="margin-top:0.5rem">Selected: grid</pre>
+      </div>
+      <div class="demo-box">
+        <div class="demo-label">Custom views</div>
+        <trellis-view-toggle id="demo-toggle-custom"></trellis-view-toggle>
+      </div>
+      <div class="demo-box">
+        <div class="demo-label">Disabled</div>
+        <trellis-view-toggle disabled></trellis-view-toggle>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sidebar Nav -->
+  <section>
+    <h2>Sidebar Nav</h2>
+    <div style="display:flex;gap:1rem">
+      <div style="width:240px;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden">
+        <trellis-sidebar-nav id="demo-sidebar-nav"></trellis-sidebar-nav>
+      </div>
+      <div style="width:240px;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden">
+        <trellis-sidebar-nav id="demo-sidebar-nav-counts"></trellis-sidebar-nav>
+      </div>
+    </div>
+    <pre id="demo-nav-output" style="margin-top:0.5rem">Selected: —</pre>
+  </section>
+
+  <script type="module" src="./main.ts"></script>
+  <script type="module">
+    // Wire up breadcrumbs
+    const bc = document.getElementById('demo-breadcrumb')
+    bc.segments = [
+      { label: 'Projects', id: 'root', icon: '📁' },
+      { label: 'trellis-ui', id: 'repo' },
+      { label: 'packages', id: 'pkg' },
+      { label: 'core', id: 'core' },
+    ]
+    bc.addEventListener('trellis-breadcrumb-navigate', (e) => console.log('navigate:', e.detail))
+
+    const bcSlash = document.getElementById('demo-breadcrumb-slash')
+    bcSlash.segments = [
+      { label: 'home', id: 'home' },
+      { label: 'docs', id: 'docs' },
+      { label: 'getting-started', id: 'start' },
+    ]
+    bcSlash.addEventListener('trellis-breadcrumb-navigate', (e) => console.log('navigate (slash):', e.detail))
+
+    // Wire up search
+    const search = document.getElementById('demo-search')
+    const searchOut = document.getElementById('demo-search-output')
+    search.addEventListener('trellis-search-input', (e) => {
+      searchOut.textContent = `Input: "${e.detail.value}"`
+    })
+    search.addEventListener('trellis-search-clear', () => {
+      searchOut.textContent = 'Cleared!'
+    })
+
+    // Wire up view toggle
+    const toggle = document.getElementById('demo-toggle')
+    const toggleOut = document.getElementById('demo-toggle-output')
+    toggle.addEventListener('trellis-view-toggle', (e) => {
+      toggleOut.textContent = `Selected: ${e.detail.view}`
+    })
+
+    const toggleCustom = document.getElementById('demo-toggle-custom')
+    toggleCustom.views = [
+      { id: 'list', label: '📋 List' },
+      { id: 'grid', label: '🔲 Grid' },
+      { id: 'board', label: '📊 Board' },
+    ]
+
+    // Wire up sidebar nav
+    const nav = document.getElementById('demo-sidebar-nav')
+    nav.zones = [
+      {
+        id: 'workspace',
+        label: 'Workspace',
+        items: [
+          { id: 'dashboard', label: 'Dashboard' },
+          { id: 'projects', label: 'Projects' },
+          { id: 'team', label: 'Team' },
+        ],
+      },
+      {
+        id: 'system',
+        label: 'System',
+        items: [
+          { id: 'settings', label: 'Settings' },
+          { id: 'logs', label: 'Logs' },
+        ],
+      },
+    ]
+    const navOut = document.getElementById('demo-nav-output')
+    nav.addEventListener('trellis-nav-select', (e) => {
+      navOut.textContent = `Selected: ${e.detail.item.id} (${e.detail.item.label})`
+    })
+
+    const navCounts = document.getElementById('demo-sidebar-nav-counts')
+    navCounts.zones = [
+      {
+        id: 'issues',
+        label: 'Issues',
+        items: [
+          { id: 'open', label: 'Open', count: 12 },
+          { id: 'in-progress', label: 'In Progress', count: 5 },
+          { id: 'done', label: 'Done', count: 34 },
+        ],
+      },
+    ]
+    navCounts.addEventListener('trellis-nav-select', (e) => {
+      navCounts.activeId = e.detail.item.id
+    })
+  </script>
+</body>
+</html>

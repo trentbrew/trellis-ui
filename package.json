@@ -6,7 +6,8 @@
     "check": "pnpm -r check",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "test:e2e": "vitest run"
+    "test:e2e": "vitest run",
+    "dev": "vite dev --config dev/vite.config.js"
   },
   "engines": {
     "node": ">=18"
@@ -14,6 +15,8 @@
   "packageManager": "pnpm@9.15.0",
   "devDependencies": {
     "@open-wc/testing": "^5.0.0",
+    "happy-dom": "^20.11.1",
+    "vite": "^6.0.0",
     "vitest": "^4.1.10"
   }
 }

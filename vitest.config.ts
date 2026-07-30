@@ -4,5 +4,6 @@ export default defineConfig({
   test: {
     include: ['e2e/**/*.spec.ts'],
     globals: true,
+    environment: 'happy-dom',
   },
 })

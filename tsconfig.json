@@ -13,5 +13,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"]
-  }
+  },
+  "exclude": ["node_modules", "e2e", "dev"]
 }
