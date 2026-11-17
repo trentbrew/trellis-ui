@@ -7,7 +7,7 @@ UI components and design tokens for the [Trellis](https://github.com/anomalyco/t
 | Package | Description |
 |---|---|---|
 | `packages/core` | Web components: `trellis-provider`, `trellis-entity`, `trellis-entity-list`, `trellis-query`, `trellis-shell`, `trellis-sidebar`, `trellis-sidebar-nav`, `trellis-header`, `trellis-breadcrumb`, `trellis-search`, `trellis-view-toggle`, `trellix-query`, `resolveShell`, signal bindings |
-| `packages/core/editor` | Rich text editor: `trellis-editor`, `trellis-mention-chip`, and ProseMirror node views |
+| `packages/core/src/editor` | Rich text editor: `trellis-editor`, `trellis-mention-chip`, and ProseMirror node views |
 | `packages/icons` | SVG icon registry with packs (action, chrome, entity, status) |
 | `packages/fonts` | Font registry with packs (display, mono, sans, serif) |
 | `tokens/` | Design tokens — foundation, semantic, and component layers as CSS custom properties |
